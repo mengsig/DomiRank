@@ -1,0 +1,6 @@
+##### The requirements for running the DomiRank and 'networks' modules/functions ######
+
+numpy
+scipy
+matplotlib
+networkx
