@@ -47,9 +47,7 @@ domiRankRobustness, domiRankLinks = dr.network_attack_sampled(GAdj, ourDomiRankA
 #generating the plot
 fig2 = plt.figure(2)
 ourRangeNew = np.linspace(0,1,domiRankRobustness.shape[0])
-plt.plot(ourRangeNew, domiRankRobustness, label = 'LCC')
-plt.plot(ourRangeNew, domiRankLinks, label = 'Links')
-plt.legend()
+plt.plot(ourRangeNew, domiRankRobustness)
 plt.xlabel('fraction of nodes removed')
 plt.ylabel('largest connected component')
 plt.show()
