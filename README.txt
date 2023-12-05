@@ -6,7 +6,13 @@ Engsig et. al.
 If you use this repository, please cite the following manuscript. --> 
 https://arxiv.org/pdf/2305.09589.pdf
 
+------------------------------------------------------------------------------------------------
+NEWS! Find the DomiLab server, a playground for DomiRank and other centralities at:
+https://domilab.tii.ae
 
+Find the source code for the DomiLab server so that you can run it locally at:
+https://github.com/tiiuae/domilab
+------------------------------------------------------------------------------------------------
 In order to run the following code please in your terminal (preferably in a conda environment):
 
 $pip install -r requirements.txt
