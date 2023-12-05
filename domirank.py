@@ -131,7 +131,7 @@ def network_attack_sampled(G, attackStrategy, sampling = 0):
 
 ######## Beginning of domirank stuff! ####################
 
-def domirank(G, sigma = -1, dt = 0.1, epsilon = 1e-5, maxIter = 1000, checkStep = 10):
+def domirank(G, analytical = True, sigma = -1, dt = 0.1, epsilon = 1e-5, maxIter = 1000, checkStep = 10):
     '''
     G is the input graph as a (preferably) sparse array.
     This solves the dynamical equation presented in the Paper: "DomiRank Centrality: revealing structural fragility of
@@ -149,29 +149,35 @@ complex networks via node dominance" and yields the following output: bool, Domi
         G = nx.to_scipy_sparse_array(G) #convert to scipy sparse if it is a graph 
     else:
         G = G.copy()
-    if sigma == -1:
-        sigma = optimal_sigma(G, dt=dt, epsilon=epsilon, maxIter = maxIter, checkstep = checkstep) 
-    pGAdj = sigma*G.astype(np.float32)
-    Psi = np.zeros(pGAdj.shape[0]).astype(np.float32)
-    maxVals = np.zeros(int(maxIter/checkStep)).astype(np.float32)
-    dt = np.float32(dt)
-    j = 0
-    boundary = epsilon*pGAdj.shape[0]*dt
-    for i in range(maxIter):
-        tempVal = ((pGAdj @ (1-Psi)) - Psi)*dt
-        Psi += tempVal.real
-        if i% checkStep == 0:
-            if np.abs(tempVal).sum() < boundary:
-                break
-            maxVals[j] = tempVal.max()
-            if i == 0:
-                initialChange = maxVals[j]
-            if j > 0:
-                if maxVals[j] > maxVals[j-1] and maxVals[j-1] > maxVals[j-2]:
-                    return False, Psi
-            j+=1
+    if analytical == False:
+        if sigma == -1:
+            sigma, _ = optimal_sigma(G, analytical = False, dt=dt, epsilon=epsilon, maxIter = maxIter, checkStep = checkStep) 
+        pGAdj = sigma*G.astype(np.float32)
+        Psi = np.ones(pGAdj.shape[0]).astype(np.float32)/pGAdj.shape[0]
+        maxVals = np.zeros(int(maxIter/checkStep)).astype(np.float32)
+        dt = np.float32(dt)
+        j = 0
+        boundary = epsilon*pGAdj.shape[0]*dt
+        for i in range(maxIter):
+            tempVal = ((pGAdj @ (1-Psi)) - Psi)*dt
+            Psi += tempVal.real
+            if i% checkStep == 0:
+                if np.abs(tempVal).sum() < boundary:
+                    break
+                maxVals[j] = tempVal.max()
+                if i == 0:
+                    initialChange = maxVals[j]
+                if j > 0:
+                    if maxVals[j] > maxVals[j-1] and maxVals[j-1] > maxVals[j-2]:
+                        return False, Psi
+                j+=1
 
-    return True, Psi
+        return True, Psi
+    else:
+        if sigma == -1:
+            sigma = optimal_sigma(G, analytical = True, dt=dt, epsilon=epsilon, maxIter = maxIter, checkStep = checkStep) 
+        Psi = sp.sparse.linalg.spsolve(sigma*G + sp.sparse.identity(G.shape[0]), sigma*G.sum(axis=-1))
+        return True, Psi
     
 def find_eigenvalue(G, minVal = 0, maxVal = 1, maxDepth = 100, dt = 0.1, epsilon = 1e-5, maxIter = 100, checkStep = 10):
     '''
@@ -193,7 +199,7 @@ def find_eigenvalue(G, minVal = 0, maxVal = 1, maxDepth = 100, dt = 0.1, epsilon
     for i in range(maxDepth):
         if maxVal - minVal < epsilon:
             break
-        if domirank(G, x, dt, epsilon, maxIter, checkStep)[0]:
+        if domirank(G, False, x, dt, epsilon, maxIter, checkStep)[0]:
             minVal = x
             x = (minVal + maxVal)/2
             minValStored = minVal
@@ -211,14 +217,14 @@ def find_eigenvalue(G, minVal = 0, maxVal = 1, maxDepth = 100, dt = 0.1, epsilon
 
 ############## This section is for finding the optimal sigma #######################
 
-def process_iteration(q, i, sigma, spArray, maxIter, checkStep, dt, epsilon, sampling):
-    tf, domiDist = domirank(spArray, sigma, dt = dt, epsilon = epsilon, maxIter = maxIter, checkStep = checkStep)
+def process_iteration(q, i, analytical, sigma, spArray, maxIter, checkStep, dt, epsilon, sampling):
+    tf, domiDist = domirank(spArray, analytical = analytical, sigma = sigma, dt = dt, epsilon = epsilon, maxIter = maxIter, checkStep = checkStep)
     domiAttack = generate_attack(domiDist)
     ourTempAttack, __ = network_attack_sampled(spArray, domiAttack, sampling = sampling)
     finalErrors = ourTempAttack.sum()
     q.put(finalErrors)
 
-def optimal_sigma(spArray, endVal = 0, startval = 0.000001, iterationNo = 100, dt = 0.1, epsilon = 1e-5, maxIter = 100, checkStep = 10, maxDepth = 100, sampling = 0):
+def optimal_sigma(spArray, analytical = True, endVal = 0, startval = 0.000001, iterationNo = 100, dt = 0.1, epsilon = 1e-5, maxIter = 100, checkStep = 10, maxDepth = 100, sampling = 0):
     ''' This part finds the optimal sigma by searching the space, here are the novel parameters:
     spArray: is the input sparse array/matrix for the network.
     startVal: is the starting value of the space that you want to search.
@@ -235,7 +241,7 @@ def optimal_sigma(spArray, endVal = 0, startval = 0.000001, iterationNo = 100, d
     processes = []
     q = mp.Queue()
     for i, sigma in enumerate(tempRange):
-        p = mp.Process(target=process_iteration, args=(q, i, sigma, spArray, maxIter, checkStep, dt, epsilon, sampling))
+        p = mp.Process(target=process_iteration, args=(q, i, analytical, sigma, spArray, maxIter, checkStep, dt, epsilon, sampling))
         p.start()
         processes.append(p)
 
@@ -248,4 +254,5 @@ def optimal_sigma(spArray, endVal = 0, startval = 0.000001, iterationNo = 100, d
     minEig = np.where(finalErrors == finalErrors.min())[0][-1]
     minEig = tempRange[minEig]
     return minEig, finalErrors
+
 
