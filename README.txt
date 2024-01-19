@@ -4,7 +4,9 @@ by
 Engsig et. al.
 
 If you use this repository, please cite the following manuscript. --> 
-https://arxiv.org/pdf/2305.09589.pdf
+https://www.nature.com/articles/s41467-023-44257-0#citeas
+
+Engsig, M., Tejedor, A., Moreno, Y. et al. DomiRank Centrality reveals structural fragility of complex networks via node dominance. Nat Commun 15, 56 (2024). https://doi.org/10.1038/s41467-023-44257-0
 
 ------------------------------------------------------------------------------------------------
 NEWS! Find the DomiLab server, a playground for DomiRank and other centralities at:
