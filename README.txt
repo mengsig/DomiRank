@@ -14,6 +14,10 @@ https://domilab.tii.ae
 
 Find the source code for the DomiLab server so that you can run it locally at:
 https://github.com/tiiuae/domilab
+
+
+NEWS!
+I will be doing an implementation of DomiRank for the Networkx API very soon!
 ------------------------------------------------------------------------------------------------
 In order to run the following code please in your terminal (preferably in a conda environment):
 
