@@ -105,8 +105,10 @@ def network_attack_sampled(G, attackStrategy, sampling = 0):
     else:
         GAdj = G.copy()
     
-    if sampling == 0:
+    if (sampling == 0) and (GAdj.shape[0] > 100):
         sampling = int(GAdj.shape[0]/100)
+    if (sampling == 0) and (GAdj.shape[0] <= 100):
+        sampling = 1
     N = GAdj.shape[0]
     initialComponent = get_component_size(GAdj)
     initialLinks = get_link_size(GAdj)
