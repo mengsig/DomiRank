@@ -224,7 +224,7 @@ def process_iteration(q, i, analytical, sigma, spArray, maxIter, checkStep, dt, 
     domiAttack = generate_attack(domiDist)
     ourTempAttack, __ = network_attack_sampled(spArray, domiAttack, sampling = sampling)
     finalErrors = ourTempAttack.sum()
-    q.put(finalErrors)
+    q.put((i, finalErrors))
 
 def optimal_sigma(spArray, analytical = True, endVal = 0, startval = 0.000001, iterationNo = 100, dt = 0.1, epsilon = 1e-5, maxIter = 100, checkStep = 10, maxDepth = 100, sampling = 0):
     ''' This part finds the optimal sigma by searching the space, here are the novel parameters:
@@ -247,14 +247,19 @@ def optimal_sigma(spArray, analytical = True, endVal = 0, startval = 0.000001, i
         p.start()
         processes.append(p)
 
-    results = []
+    results = [None] * len(tempRange)  # Initialize a results list
+
+    #Join the processes and gather results from the queue
     for p in processes:
         p.join()
-        result = q.get()
-        results.append(result)
+
+    #Ensure that results are fetched from the queue after all processes are done
+    while not q.empty():
+        idx, result = q.get()
+        results[idx] = result  # Store result in the correct order
+
     finalErrors = np.array(results)
     minEig = np.where(finalErrors == finalErrors.min())[0][-1]
     minEig = tempRange[minEig]
     return minEig, finalErrors
-
 

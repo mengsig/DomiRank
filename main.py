@@ -10,8 +10,22 @@ m = 2 #average number of links per node.
 analytical = False #if you want to use the analytical method or the recursive definition
 directed = False
 
+##### #RANDOMIZATION ######
+
+#for random results
+seed = np.random.randint(0, high = 2**32-1)
+
+#for deterministic results
+#seed = 42
+
+#setting the random seed
+np.random.seed(seed)
+
+
+##### END OF RANDOMIZATION #####
+
 ############## IMPORTANT!!!! Here you can create whatever graph you want and just comment this erdos-renyi network out ############
-G = nx.fast_gnp_random_graph(N, 2*m/N, directed = directed) #####THIS IS THE INPUT, CHANGE THIS TO ANY GRAPH #######
+G = nx.fast_gnp_random_graph(N, 2*m/N, directed = directed, seed = seed) #####THIS IS THE INPUT, CHANGE THIS TO ANY GRAPH #######
 
 #################### insert network hereunder ########################3
 GAdj = nx.to_scipy_sparse_array(G)
