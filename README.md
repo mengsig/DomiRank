@@ -19,11 +19,26 @@ https://github.com/tiiuae/domilab
 NEWS!
 I will be doing an implementation of DomiRank for the Networkx API very soon!
 ------------------------------------------------------------------------------------------------
-In order to run the following code please in your terminal (preferably in a conda environment):
+In order to run the following code please in your terminal:
+
+First we set up a virutal environment using python-venv:
+
+$python -m venv domirank
+
+Now we activate our virtual environment:
+
+$source domirank/bin/activate
+
+Then we install the required libraries.
 
 $pip install -r requirements.txt
 
 Thereafter you should be ready to use all the files in the domirank.py module (;
+If you want to activate the same virutal-environment at other time, you simply navigate to the directory, and type:
+
+$source domirank/bin/activate
+
+For the script, here are a few things to play around with:
 
 Change G to any network you want (networkx), or import any network and turn it into a scipy.sparse.csr_array() data structure. This will make sure the code runs flawlessly. 
 

@@ -5,8 +5,8 @@ import scipy as sp
 import numpy as np
 import time
 
-N = 10000 #size of network
-m = 2 #average number of links per node.
+N = 2500 #size of network
+m = 3 #average number of links per node.
 analytical = False #if you want to use the analytical method or the recursive definition
 directed = False
 
@@ -36,7 +36,7 @@ G, node_map = dr.relabel_nodes(G, yield_map = True)
 print(type(GAdj))
 #Here we find the maximum eigenvalue using the DomiRank algorithm and searching the space through a golden-ratio/bisection algorithm, taking advantage of the fast divergence when sigma > -1/lambN
 t1 = time.time()
-lambN = dr.find_eigenvalue(GAdj, maxIter = 500, dt = 0.1, checkStep = 25) #sometimes you will need to change these parameters to get convergence
+lambN = dr.find_eigenvalue(GAdj, maxIter = 500, dt = 0.01, checkStep = 25) #sometimes you will need to change these parameters to get convergence
 t2 = time.time()
 #IMPORTANT NOTE: for large graphs, comment out the lines below (23-26), along with lines (32-33).
 #Please comment the part below (23-26) & (32-33) if you don't want a comparison with how fast the domirank eigenvalue computation is to the numpy computation.
