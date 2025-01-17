@@ -5,6 +5,14 @@ import scipy as sp
 import numpy as np
 import time
 
+########### FIGURE STUFF ###############
+A = 6  # Want figures to be A6
+plt.rc('figure', figsize=[46.82 * .5**(.5 * A), 35.61 * .5**(.5 * A)])
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+plt.rcParams.update({'font.size': 24})
+########################################
+
 N = 2500 #size of network
 m = 3 #average number of links per node.
 analytical = False #if you want to use the analytical method or the recursive definition
@@ -56,14 +64,15 @@ sigma, sigmaArray = dr.optimal_sigma(GAdj, analytical = analytical, endVal = lam
 print(f'\n The optimal sigma was found to be: {sigma*-lambN}/-lambda_N')
 
 
-fig1 = plt.figure(1)
+fig, ax = plt.subplots()
 ourRange = np.linspace(0,1, sigmaArray.shape[0]) 
 index = np.where(sigmaArray == sigmaArray.min())[0][-1]
 
-plt.plot(ourRange, sigmaArray)
-plt.plot(ourRange[index], sigmaArray[index], 'ro', mfc = 'none', markersize = 10)
-plt.xlabel('sigma')
-plt.ylabel('loss')
+ax.plot(ourRange, sigmaArray)
+ax.plot(ourRange[index], sigmaArray[index], 'ro', mfc = 'none', markersize = 10)
+ax.set_xlabel('sigma')
+ax.set_ylabel('area under LCC curve')
+fig.set_tight_layout(True)
 
 
 _, ourDomiRankDistribution = dr.domirank(GAdj, analytical = analytical, sigma = sigma) #generate the centrality using the optimal sigma
@@ -76,11 +85,12 @@ domiRankRobustness, domiRankLinks = dr.network_attack_sampled(GAdj, ourDomiRankA
 #domiRankRobustnessA, domiRankLinksA = dr.network_attack_sampled(GAdj, analyticalDomiRankAttack) #attack the network and get the largest connected component evolution
 
 #generating the plot
-fig2 = plt.figure(2)
+fig2, ax2 = plt.subplots()
 ourRangeNew = np.linspace(0,1,domiRankRobustness.shape[0])
-plt.plot(ourRangeNew, domiRankRobustness, label = 'Recursive DR')
-#plt.plot(ourRangeNew, domiRankRobustnessA, label = 'Analytical DR') #UNCOMMENT HERE to plot the analyitcal solution
-plt.legend()
-plt.xlabel('fraction of nodes removed')
-plt.ylabel('largest connected component')
+ax2.plot(ourRangeNew, domiRankRobustness)#, label = 'Recursive DR')
+#ax2.plot(ourRangeNew, domiRankRobustnessA, label = 'Analytical DR') #UNCOMMENT HERE to plot the analyitcal solution
+#ax2.legend()
+ax2.set_xlabel('fraction of nodes removed')
+ax2.set_ylabel('largest connected component')
+fig2.set_tight_layout(True)
 plt.show()
