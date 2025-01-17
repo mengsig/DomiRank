@@ -56,7 +56,7 @@ By: Marcus Engsig
 
 
 ------------------------------------------------------------------------------------------------
-Sample Output:
+Sample Output for the crime network (Crime_Gcc.txt):
 
 ![screenshot](images/optimal_sigma.png)
 
