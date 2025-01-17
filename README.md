@@ -15,9 +15,9 @@ https://domilab.tii.ae
 Find the source code for the DomiLab server so that you can run it locally at:
 https://github.com/tiiuae/domilab
 
-
 NEWS!
 I will be doing an implementation of DomiRank for the Networkx API very soon!
+
 ------------------------------------------------------------------------------------------------
 In order to run the following code please in your terminal:
 
@@ -53,3 +53,11 @@ Or, feel free to contact me at: marcus.w.engsig@gmail.com
 Enjoy! (:
 
 By: Marcus Engsig
+
+
+------------------------------------------------------------------------------------------------
+Sample Output:
+
+![screenshot](images/optimal_sigma.png)
+
+![screenshot](images/llc_curve.png)
