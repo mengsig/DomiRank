@@ -46,7 +46,7 @@ def get_component_size(G, strong = False):
             GMask = max(nx.connected_components(G), key = len)
         G = G.subgraph(GMask)
         return len(GMask)        
-    elif type(G) == scipy.sparse._arrays.csr_array:
+    elif type(G) == scipy.sparse.csr_array:
         if strong == False:
             connection_type = 'weak'
         else:
@@ -59,7 +59,7 @@ def get_component_size(G, strong = False):
 def get_link_size(G):
     if type(G) == nx.classes.graph.Graph: #check if it is a networkx Graph
         links = len(G.edges()) #convert to scipy sparse if it is a graph 
-    elif type(G) == scipy.sparse._arrays.csr_array:
+    elif type(G) == scipy.sparse.csr_array:
         links = G.sum()
     else:
         raise TypeError('You must input a networkx.Graph Data-Type')
@@ -76,7 +76,7 @@ def remove_node(G, removedNode):
             for node in removedNode:
                 G.remove_node(node) #remove node in graph form
         return G
-    elif type(G) == scipy.sparse._arrays.csr_array:
+    elif type(G) == scipy.sparse.csr_array:
         diag = sp.sparse.csr_array(sp.sparse.eye(G.shape[0])) 
         diag[removedNode, removedNode] = 0 #set the rows and columns that are equal to zero in the sparse array
         G = diag @ G 
@@ -105,16 +105,17 @@ def network_attack_sampled(G, attackStrategy, sampling = 0):
     else:
         GAdj = G.copy()
     
-    if (sampling == 0) and (GAdj.shape[0] > 100):
-        sampling = int(GAdj.shape[0]/100)
-    if (sampling == 0) and (GAdj.shape[0] <= 100):
-        sampling = 1
+    if sampling == 0:
+        if GAdj.shape[0] < 100:
+            sampling = 1
+        else:
+            sampling = int(GAdj.shape[0]/100)
     N = GAdj.shape[0]
     initialComponent = get_component_size(GAdj)
     initialLinks = get_link_size(GAdj)
     m = GAdj.sum()/N
-    componentEvolution = np.zeros(int(N/sampling))
-    linksEvolution = np.zeros(int(N/sampling))
+    componentEvolution = np.zeros((N//sampling + 1))
+    linksEvolution = np.zeros((N//sampling) + 1)
     j = 0 
     for i in range(N-1):
         if i % sampling == 0:
@@ -154,10 +155,10 @@ complex networks via node dominance" and yields the following output: bool, Domi
     if analytical == False:
         if sigma == -1:
             sigma, _ = optimal_sigma(G, analytical = False, dt=dt, epsilon=epsilon, maxIter = maxIter, checkStep = checkStep) 
-        pGAdj = sigma*G.astype(np.float32)
-        Psi = np.ones(pGAdj.shape[0]).astype(np.float32)/pGAdj.shape[0]
-        maxVals = np.zeros(int(maxIter/checkStep)).astype(np.float32)
-        dt = np.float32(dt)
+        pGAdj = sigma*G.astype(np.float64)
+        Psi = np.ones(pGAdj.shape[0]).astype(np.float64)/pGAdj.shape[0]
+        maxVals = np.zeros(int(maxIter/checkStep)).astype(np.float64)
+        dt = np.float64(dt)
         j = 0
         boundary = epsilon*pGAdj.shape[0]*dt
         for i in range(maxIter):
@@ -262,4 +263,3 @@ def optimal_sigma(spArray, analytical = True, endVal = 0, startval = 0.000001, i
     minEig = np.where(finalErrors == finalErrors.min())[0][-1]
     minEig = tempRange[minEig]
     return minEig, finalErrors
-

@@ -9,6 +9,8 @@ N = 2500 #size of network
 m = 3 #average number of links per node.
 analytical = False #if you want to use the analytical method or the recursive definition
 directed = False
+seed = 42
+np.random.seed(seed)
 
 ##### #RANDOMIZATION ######
 
@@ -25,15 +27,20 @@ np.random.seed(seed)
 ##### END OF RANDOMIZATION #####
 
 ############## IMPORTANT!!!! Here you can create whatever graph you want and just comment this erdos-renyi network out ############
-G = nx.fast_gnp_random_graph(N, 2*m/N, directed = directed, seed = seed) #####THIS IS THE INPUT, CHANGE THIS TO ANY GRAPH #######
+#G = nx.fast_gnp_random_graph(N, 2*m/N, seed = seed, directed = directed) #####THIS IS THE INPUT, CHANGE THIS TO ANY GRAPH #######
+A  = np.loadtxt("Crime_Gcc.txt")
+G = nx.read_edgelist("Crime_Gcc.txt", )
+N = len(G)
+
 
 #################### insert network hereunder ########################3
 GAdj = nx.to_scipy_sparse_array(G)
+#GAdj = sp.sparse.random(N,N, density = 0.01, format = 'csr')*1
+#GAdj = GAdj @ GAdj.T
 #flipping the network direction if it is directed (depends on the interactions of the links...)
 if directed:
     GAdj = sp.sparse.csr_array(GAdj.T)
 G, node_map = dr.relabel_nodes(G, yield_map = True)
-print(type(GAdj))
 #Here we find the maximum eigenvalue using the DomiRank algorithm and searching the space through a golden-ratio/bisection algorithm, taking advantage of the fast divergence when sigma > -1/lambN
 t1 = time.time()
 lambN = dr.find_eigenvalue(GAdj, maxIter = 500, dt = 0.01, checkStep = 25) #sometimes you will need to change these parameters to get convergence
