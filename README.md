@@ -1,16 +1,14 @@
-## Citing this package
+# Citing this package
 ------------------------------------------------------------------------------------------------
 This is the code used for the paper:
 *"DomiRank Centrality: revealing structural fragility of complex networks via node dominance"*, 
 by **Engsig et. al.**
 
-If you use this repository, please cite the following manuscript.
-------------------------------------------------------------------------------------------------
+## If you use this repository, please cite the following manuscript.
 https://www.nature.com/articles/s41467-023-44257-0#citeas
 Engsig, M., Tejedor, A., Moreno, Y. et al. DomiRank Centrality reveals structural fragility of complex networks via node dominance. Nat Commun 15, 56 (2024). https://doi.org/10.1038/s41467-023-44257-0
 
-## NetworkX
-------------------------------------------------------------------------------------------------
+# NetworkX
 This package is compatible with the NetworkX library. Currently, I am working on integrating 
 DomiRank to be available directly via NetworkX API. The Pull-Request is linked hereunder:
 
@@ -20,7 +18,7 @@ If you want this to get integrated directly into the NetworkX API, please go giv
 emoji ): directly to the PR to give it more attention.
 
 
-## Installing DomiRank on your machine
+# Installing DomiRank on your machine
 ------------------------------------------------------------------------------------------------
 If you are using **arch-linux** you can directly install via:
 
@@ -35,7 +33,7 @@ pip install -e .
 ```
 
 
-### Setting up a virtual environment using python-venv
+## Setting up a virtual environment using python-venv
 I highly recommend setting up a virtual environment using python-venv.
 
 The first step is to initialize the virtual environment: 
@@ -62,7 +60,7 @@ If you want to activate the same virutal-environment at other time, you simply n
 $source domirank_venv/bin/activate
 
 
-## Sample *main.py* script.
+# Sample *main.py* script.
 ------------------------------------------------------------------------------------------------
 For the script, here are a few things to play around with:
 
@@ -75,13 +73,12 @@ Finally, the network can be attacked according to any strategy, using the follow
 
 Feel free to contact me at: marcus.w.engsig@gmail.com
 
-Enjoy! (:
+Enjoy! ( ;
 
 By: Marcus Engsig
 
 
-------------------------------------------------------------------------------------------------
-**Sample Output for a crime network:**
+## Sample output for a crime network
 
 ![screenshot](images/optimal_sigma.png)
 
