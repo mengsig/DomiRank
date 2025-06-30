@@ -1,5 +1,4 @@
 # Citing this package
-------------------------------------------------------------------------------------------------
 This is the code used for the paper:
 *"DomiRank Centrality: revealing structural fragility of complex networks via node dominance"*, 
 by **Engsig et. al.**
@@ -19,7 +18,6 @@ emoji ): directly to the PR to give it more attention.
 
 
 # Installing DomiRank on your machine
-------------------------------------------------------------------------------------------------
 If you are using **arch-linux** you can directly install via:
 
 ```
@@ -61,7 +59,6 @@ $source domirank_venv/bin/activate
 
 
 # Sample *main.py* script.
-------------------------------------------------------------------------------------------------
 For the script, here are a few things to play around with:
 
 1. To use any network simply save the edgelist in Networks and change the networkName variable to suit the naming of your edgelist. You can also generate synthetic networks similarly to the *commented* network generation in the script.
