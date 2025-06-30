@@ -5,7 +5,8 @@ by **Engsig et. al.**
 
 ## If you use this repository, please cite the following manuscript.
 https://www.nature.com/articles/s41467-023-44257-0#citeas
-Engsig, M., Tejedor, A., Moreno, Y. et al. DomiRank Centrality reveals structural fragility of complex networks via node dominance. Nat Commun 15, 56 (2024). https://doi.org/10.1038/s41467-023-44257-0
+
+Engsig, M., Tejedor, A., Moreno, Y. et al. *DomiRank Centrality reveals structural fragility of complex networks via node dominance*. Nat Commun **15**, 56 (2024). https://doi.org/10.1038/s41467-023-44257-0
 
 # NetworkX
 This package is compatible with the NetworkX library. Currently, I am working on integrating 
