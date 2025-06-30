@@ -1,20 +1,35 @@
-import domirank as dr
+import src.DomiRank as dr
+from src.utils.NetworkUtils import ( 
+    relabel_nodes,
+    generate_attack,
+    network_attack_sampled,
+)
 import networkx as nx
 import matplotlib.pyplot as plt
 import scipy as sp
 import numpy as np
 import time
 
+########## Figure Parameters ##########
+use_latex = False
+save_plots = True
+
+if save_plots:
+    import os
+    os.makedirs("figs", exist_ok = True)
+
 ########### FIGURE STUFF ###############
 A = 6  # Want figures to be A6
 plt.rc('figure', figsize=[46.82 * .5**(.5 * A), 35.61 * .5**(.5 * A)])
-plt.rc('text', usetex=True)
+#Convert to true to use latex
+if use_latex:
+    plt.rc('text.latex', preamble=r'\usepackage{lmodern}')
 plt.rc('font', family='serif')
-plt.rcParams.update({'font.size': 24})
+plt.rcParams.update({'font.size': 14})
 ########################################
 
-N = 2500 #size of network
-m = 3 #average number of links per node.
+N = 10000 #size of network
+m = 4 #average number of links per node.
 analytical = False #if you want to use the analytical method or the recursive definition
 directed = False
 seed = 42
@@ -30,14 +45,14 @@ seed = np.random.randint(0, high = 2**32-1)
 
 #setting the random seed
 np.random.seed(seed)
-
-
 ##### END OF RANDOMIZATION #####
 
 ############## IMPORTANT!!!! Here you can create whatever graph you want and just comment this erdos-renyi network out ############
 #G = nx.fast_gnp_random_graph(N, 2*m/N, seed = seed, directed = directed) #####THIS IS THE INPUT, CHANGE THIS TO ANY GRAPH #######
-A  = np.loadtxt("Crime_Gcc.txt")
-G = nx.read_edgelist("Crime_Gcc.txt", )
+
+# Using real network "Crime_Gcc"
+networkName = "Crime_Gcc.txt"
+G = nx.read_edgelist(f"Networks/{networkName}", )
 N = len(G)
 
 
@@ -48,7 +63,7 @@ GAdj = nx.to_scipy_sparse_array(G)
 #flipping the network direction if it is directed (depends on the interactions of the links...)
 if directed:
     GAdj = sp.sparse.csr_array(GAdj.T)
-G, node_map = dr.relabel_nodes(G, yield_map = True)
+G, node_map = relabel_nodes(G, yield_map = True)
 #Here we find the maximum eigenvalue using the DomiRank algorithm and searching the space through a golden-ratio/bisection algorithm, taking advantage of the fast divergence when sigma > -1/lambN
 t1 = time.time()
 lambN = dr.find_eigenvalue(GAdj, maxIter = 500, dt = 0.01, checkStep = 25) #sometimes you will need to change these parameters to get convergence
@@ -73,16 +88,18 @@ ax.plot(ourRange[index], sigmaArray[index], 'ro', mfc = 'none', markersize = 10)
 ax.set_xlabel('sigma')
 ax.set_ylabel('area under LCC curve')
 fig.set_tight_layout(True)
+if save_plots:
+    fig.savefig("figs/optimal_sigma.png", dpi = 300)
 
 
 _, ourDomiRankDistribution = dr.domirank(GAdj, analytical = analytical, sigma = sigma) #generate the centrality using the optimal sigma
-ourDomiRankAttack = dr.generate_attack(ourDomiRankDistribution) #generate the attack using the centrality (descending)
-domiRankRobustness, domiRankLinks = dr.network_attack_sampled(GAdj, ourDomiRankAttack) #attack the network and get the largest connected component evolution
+ourDomiRankAttack = generate_attack(ourDomiRankDistribution) #generate the attack using the centrality (descending)
+domiRankRobustness, domiRankLinks = network_attack_sampled(GAdj, ourDomiRankAttack) #attack the network and get the largest connected component evolution
 
 ## UNCOMMENT HERE: to compute the analytical solution for the same sigma value (make sure your network is not too big.)
 #analyticalDomiRankDistribution = sp.sparse.linalg.spsolve(sigma*GAdj + sp.sparse.identity(GAdj.shape[0]), sigma*GAdj.sum(axis=-1)) #analytical solution to DR
-#analyticalDomiRankAttack = dr.generate_attack(analyticalDomiRankDistribution) #generate the attack using the centrality (descending)
-#domiRankRobustnessA, domiRankLinksA = dr.network_attack_sampled(GAdj, analyticalDomiRankAttack) #attack the network and get the largest connected component evolution
+#analyticalDomiRankAttack = generate_attack(analyticalDomiRankDistribution) #generate the attack using the centrality (descending)
+#domiRankRobustnessA, domiRankLinksA = network_attack_sampled(GAdj, analyticalDomiRankAttack) #attack the network and get the largest connected component evolution
 
 #generating the plot
 fig2, ax2 = plt.subplots()
@@ -93,4 +110,6 @@ ax2.plot(ourRangeNew, domiRankRobustness)#, label = 'Recursive DR')
 ax2.set_xlabel('fraction of nodes removed')
 ax2.set_ylabel('largest connected component')
 fig2.set_tight_layout(True)
+if save_plots:
+    fig2.savefig("figs/llc_curve.png", dpi = 300)
 plt.show()
