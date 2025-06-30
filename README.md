@@ -38,7 +38,7 @@ I highly recommend setting up a virtual environment using python-venv.
 The first step is to initialize the virtual environment: 
 
 ```
-python -m venv domirank
+python -m venv domirank_venv
 ```
 
 Now we activate our virtual environment:
