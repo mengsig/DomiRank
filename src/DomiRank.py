@@ -109,7 +109,7 @@ def optimal_sigma(spArray, analytical = True, endVal = 0, startval = 0.000001, i
     endVal: is the ending value of the space that you want to search (normally it should be the eigenvalue)
     iterationNo: the number of partitions of the space between lambN that you set
     
-    return : the function returns the value of sigma - the numerator of the fraction of (\sigma)/(-1*lambN)
+    return : the function returns the value of sigma - the numerator of the fraction of (\\sigma)/(-1*lambN)
     '''
     if endVal == 0:
         endVal = find_eigenvalue(spArray, maxDepth = maxDepth, dt = dt, epsilon = epsilon, maxIter = maxIter, checkStep = checkStep)
