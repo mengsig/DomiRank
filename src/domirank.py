@@ -56,7 +56,7 @@ def domirank(G, analytical=True, sigma=-1, dt=0.1, epsilon=1e-5, maxIter=1000, c
         return True, Psi
     else:
         if sigma == -1:
-            sigma, _ = optimal_sigma(
+            sigma = optimal_sigma(
                 G, analytical=True, dt=dt, epsilon=epsilon, maxIter=maxIter, checkStep=checkStep
             )
         Psi = sp.sparse.linalg.spsolve(
@@ -84,24 +84,27 @@ def find_eigenvalue(
     """
     eigval = sp.sparse.linalg.eigs(G, k=1, which="LR")[0][0]
     return -eigval.real
-    x = (minVal + maxVal) / G.sum(axis=-1).max()
-    minValStored = 0
-    for i in range(maxDepth):
-        if maxVal - minVal < epsilon:
-            break
-        if domirank(G, False, x, dt, epsilon, maxIter, checkStep)[0]:
-            minVal = x
-            x = (minVal + maxVal) / 2
-            minValStored = minVal
-        else:
-            maxVal = (x + maxVal) / 2
-            x = (minVal + maxVal) / 2
-        if minVal == 0:
-            print(f"Current Interval : [-inf, -{1 / maxVal}]")
-        else:
-            print(f"Current Interval : [-{1 / minVal}, -{1 / maxVal}]")
-    finalVal = (maxVal + minVal) / 2
-    return -1 / finalVal
+    ############ deprecated ##################
+
+
+#    x = (minVal + maxVal) / G.sum(axis=-1).max()
+#    minValStored = 0
+#    for i in range(maxDepth):
+#        if maxVal - minVal < epsilon:
+#            break
+#        if domirank(G, False, x, dt, epsilon, maxIter, checkStep)[0]:
+#            minVal = x
+#            x = (minVal + maxVal) / 2
+#            minValStored = minVal
+#        else:
+#            maxVal = (x + maxVal) / 2
+#            x = (minVal + maxVal) / 2
+#        if minVal == 0:
+#            print(f"Current Interval : [-inf, -{1 / maxVal}]")
+#        else:
+#            print(f"Current Interval : [-{1 / minVal}, -{1 / maxVal}]")
+#    finalVal = (maxVal + minVal) / 2
+#    return -1 / finalVal
 
 
 ############## This section is for finding the optimal sigma #######################
