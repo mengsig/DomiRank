@@ -56,7 +56,7 @@ def domirank(G, analytical=True, sigma=-1, dt=0.1, epsilon=1e-5, maxIter=1000, c
         return True, Psi
     else:
         if sigma == -1:
-            sigma = optimal_sigma(
+            sigma, _ = optimal_sigma(
                 G, analytical=True, dt=dt, epsilon=epsilon, maxIter=maxIter, checkStep=checkStep
             )
         Psi = sp.sparse.linalg.spsolve(
