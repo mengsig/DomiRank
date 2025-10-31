@@ -1,5 +1,5 @@
 import domirank as dr
-from domirank.utils.NetworkUtils import (
+from src.utils.NetworkUtils import (
     relabel_nodes,
     generate_attack,
     network_attack_sampled,

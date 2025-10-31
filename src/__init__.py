@@ -1,1 +1,1 @@
-from .domirank import DomiRank  # or functions/classes you want to expose
+from .domirank import domirank  # or functions/classes you want to expose
